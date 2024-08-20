@@ -4,7 +4,7 @@
       <v-text-field
         v-model="newTodo"
         label="Add a new to-do"
-        outlined
+        outlined 
         dense
         @keyup.enter="submitTodo"
       />

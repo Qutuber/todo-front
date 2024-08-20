@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>To-Do List</h2>
+    <h2>To-do List</h2>
     <input v-model="newTodo" placeholder="Add a new to-do" @keyup.enter="addTodo" />
     <button @click="addTodo">Add</button>
 
