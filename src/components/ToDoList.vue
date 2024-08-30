@@ -26,6 +26,13 @@
             </template>
           </v-list-item>
         </v-list>
+
+        <!-- 페이징 UI -->
+         <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          @input="fetchTodos"
+          />
       </v-col>
     </v-row>
   </v-container>
@@ -41,14 +48,20 @@ export default {
   components: { AddTodo },
   data() {
     return {
-      todos: []
+      todos: [],
+      currentPage: 1, //현재 페이지
+      totalPages: 1, //총 페이지 수
+      pageSize: 10. //페이지 당 개수
+
     }
   },
   methods: {
     async fetchTodos() {
       try {
-        const response = await todoService.getTodos()
-        this.todos = response.data
+        const response = await todoService.getTodos(this.currentPage - 1, this.pageSize)
+        console.log(response)
+        this.todos = response.data.content
+        this.totalPages = response.data.totalPages
       } catch (error) {
         console.error('Error fetchTodos todo : ', error)
       }
@@ -57,7 +70,8 @@ export default {
       try {
         const updateTodo = {...todo, completed: !todo.completed}
         const response = await todoService.updateTodo(todo.id, updateTodo)
-        this.todos = this.todos.map( t => t.id === todo.id ? updateTodo : t)
+        //this.todos = this.todos.map( t => t.id === todo.id ? updateTodo : t)
+        this.fetchTodos()
       } catch(error) {
         console.error('Error fetchTodos todo : ', error)
       }
@@ -66,7 +80,8 @@ export default {
       try {
         const newTodo = {title: todoTitle, completed: false}
         const response = await todoService.createTodo(newTodo)
-        this.todo.push(response.data)
+        //this.todo.push(response.data)
+        this.fetchTodos()
       } catch(error) {
         console.error('Error fetchTodos todo : ', error)
       }
@@ -74,7 +89,8 @@ export default {
     async removeTodo(id) {
       try {
        await todoService.deleteTodo(id)
-       this.todos = this.todos.filter( todo => todo.id !== id)
+       //this.todos = this.todos.filter( todo => todo.id !== id)
+       this.fetchTodos()
       } catch(error) {
         console.error('Error fetchTodos todo : ', error)
       }
